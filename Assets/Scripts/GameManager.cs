@@ -1,24 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     public Rigidbody2D ball;
+    public Text scoreLeftText;
+    public Text scoreRightText;
+    public GameObject countdownWrapper;
+    public Text countdownText;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-    }
+    private int _scoreLeft;
+    private int _scoreRight;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (instance == null)
+            instance = this;
+
+        _scoreLeft = 0;
+        _scoreRight = 0;
+
         InitializeBall();
+        StartCoroutine(_Countingdown());
     }
 
    public void  InitializeBall()
@@ -38,4 +46,36 @@ public class GameManager : MonoBehaviour
 
        ball.transform.position = Vector3.zero;
    }
+
+    public void IncreaseScore(bool left)
+    {
+        if (left)
+        {
+            _scoreLeft++;
+            scoreLeftText.text = _scoreLeft.ToString();
+        }
+        else
+        {
+            _scoreRight++;
+            scoreRightText.text = _scoreRight.ToString();
+        }
+    }
+
+    private IEnumerator _Countingdown()
+    {
+        //freeze everything
+        Time.timeScale = 0;
+
+        // count down
+        for (int c = 3; c > 0; c--)
+        {
+            countdownText.text = c.ToString();
+            yield return new WaitForSecondsRealtime(1);
+        }
+
+        countdownWrapper.SetActive(false);
+
+        // reset the time scale
+        Time.timeScale = 1;
+    }
 }
