@@ -6,45 +6,59 @@ public class PaddleManager : MonoBehaviour
 {
     public bool isLeft;
 
-    private KeyCode _upKey;
-    private KeyCode _downKey;
+    public GameObject ball; 
 
-    private float _speed = 0.3f;
+    private float _speed = 0.1f;
+    private float _maxY = 4.25f; // maximum Y position the paddle can reach
 
     // Start is called before the first frame update
     void Start()
     {
-        _upKey = isLeft ? KeyCode.W : KeyCode.UpArrow;
-        _downKey = isLeft ? KeyCode.S : KeyCode.DownArrow;
+        if (ball == null)
+        {
+            ball = GameObject.FindGameObjectWithTag("Ball");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(_upKey)) MoveUp();
-        if (Input.GetKey(_downKey)) MoveDown();
+        if (isLeft)
+        {
+            FollowBall();
+        }
+        else
+        {
+            // player control
+            if (Input.GetKey(KeyCode.UpArrow)) MoveUp();
+            if (Input.GetKey(KeyCode.DownArrow)) MoveDown();
+        }
+    }
+
+    // AI control
+    void FollowBall()
+    {
+        if (ball != null)
+        {
+            Vector3 direction = (ball.transform.position - transform.position).normalized;
+            float targetY = Mathf.Clamp(transform.position.y + direction.y * _speed, -_maxY, _maxY);
+            transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
+        }
     }
 
     void MoveUp()
     {
-        transform.Translate(Vector2.up * _speed);
-        if (transform.position.y > 4.25f)
+        if (transform.position.y < _maxY)
         {
-            Vector3 p = transform.position;
-            p.y = 4.25f;
-            transform.position = p;
+            transform.Translate(Vector2.up * _speed);
         }
     }
 
     void MoveDown()
     {
-        transform.Translate(-Vector2.up * _speed);
-        if (transform.position.y < -4.25f)
+        if (transform.position.y > -_maxY)
         {
-            Vector3 p = transform.position;
-            p.y = -4.25f;
-            transform.position = p;
+            transform.Translate(-Vector2.up * _speed);
         }
     }
-
 }

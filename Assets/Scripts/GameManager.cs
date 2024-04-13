@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         if (instance == null)
             instance = this;
 
+        // countdown to the start of the game
         _scoreLeft = 0;
         _scoreRight = 0;
 
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
 
    public void  InitializeBall()
    {
+        // get a random angle for the ball direction
        float angle = Random.Range(0f, 30f);
        float r = Random.Range(0f, 1f);
        if (r < 0.25f)
@@ -44,21 +46,36 @@ public class GameManager : MonoBehaviour
        Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
        ball.velocity = dir.normalized * 10f;
 
-       ball.transform.position = Vector3.zero;
+       ball.transform.position = Vector3.zero; // reset the ball
    }
 
     public void IncreaseScore(bool left)
     {
         if (left)
         {
+            // check if left player scored/won
             _scoreLeft++;
             scoreLeftText.text = _scoreLeft.ToString();
+            if (_scoreLeft >= 11)
+            {
+                GameOver();
+            }
         }
         else
         {
+            // check if right player scored/won
             _scoreRight++;
             scoreRightText.text = _scoreRight.ToString();
+            if (_scoreRight >= 11)
+            {
+                GameOver();
+            }
         }
+    }
+
+    public void GameOver()
+    {
+        Time.timeScale = 0; // freeze the game when its over
     }
 
     private IEnumerator _Countingdown()
