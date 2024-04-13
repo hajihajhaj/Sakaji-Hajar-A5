@@ -8,7 +8,7 @@ public class PaddleManager : MonoBehaviour
 
     public GameObject ball; 
 
-    private float _speed = 0.1f;
+    private float _speed = 0.4f;
     private float _maxY = 4.25f; // maximum Y position the paddle can reach
 
     // Start is called before the first frame update
@@ -33,6 +33,7 @@ public class PaddleManager : MonoBehaviour
             if (Input.GetKey(KeyCode.UpArrow)) MoveUp();
             if (Input.GetKey(KeyCode.DownArrow)) MoveDown();
         }
+
     }
 
     // AI control
